@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+cd "$(dirname -- "$0")/../.." || exit 1
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+cd server || exit 1
+
+npx concurrently --raw --kill-others-on-fail \
+  "npm run lint" \
+  "npm run format" \
+  "npm run test" \
+  "npm run build"
+

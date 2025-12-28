@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+cd "$(dirname -- "$0")/.." || exit 1
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+cd client && npx lint-staged && cd .. || exit 1
+cd server && npx lint-staged && cd .. || exit 1

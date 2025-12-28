@@ -1,0 +1,21 @@
+{
+  "name": "full-stack-app-template",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install": "cd client && npm install && cd ../server && npm install",
+    "prepare": "husky install",
+    "docker:up": "docker-compose up",
+    "docker:up:dev": "docker-compose -f docker-compose.dev.yml up",
+    "docker:build": "docker-compose up --build",
+    "docker:build:dev": "docker-compose -f docker-compose.dev.yml up --build",
+    "docker:down": "docker-compose down",
+    "docker:down:dev": "docker-compose -f docker-compose.dev.yml down",
+    "client:dev": "cd client && npm run dev",
+    "docker:clean": "docker-compose down -v --rmi all && docker system prune -a --volumes -f"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "husky": "^8.0.3"
+  }
+}
