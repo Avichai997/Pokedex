@@ -23,6 +23,7 @@ npm run dev
 ```
 
 **Access:**
+
 - Client: http://localhost:5173
 - API: http://localhost:8080/api
 
@@ -34,6 +35,7 @@ docker-compose up --build
 ```
 
 **Access:**
+
 - Client: http://localhost:5173
 - API: http://localhost:8080/api
 
@@ -42,6 +44,7 @@ docker-compose up --build
 ### Client (React + TypeScript)
 
 The frontend is a React application built with:
+
 - **React 18** with TypeScript
 - **Vite** for fast development and building
 - **React Query** for data fetching and caching
@@ -49,6 +52,7 @@ The frontend is a React application built with:
 - **Tailwind CSS** for styling
 
 **Key Features:**
+
 - Browse Pokemon with pagination
 - Filter by type
 - Search Pokemon by name, type, or number
@@ -60,11 +64,13 @@ The frontend is a React application built with:
 ### Server (Flask + Python)
 
 The backend is a Flask REST API that provides:
+
 - **Flask** web framework
 - **PostgreSQL** for persistent storage (captured Pokemon)
 - **Redis** for caching Pokemon data (2-minute TTL)
 
 **Key Features:**
+
 - RESTful API endpoints
 - Redis caching for performance
 - PostgreSQL for data persistence
@@ -75,20 +81,25 @@ The backend is a Flask REST API that provides:
 ### Pokemon Endpoints
 
 - `GET /api/pokemon` - Get paginated Pokemon list
+
   - Query params: `page`, `page_size` (5/10/20), `sort` (asc/desc), `type`, `search`
   - Returns: `{ pokemon: [], total: number, page: number, page_size: number, total_pages: number }`
 
 - `GET /api/pokemon/captured` - Get list of captured Pokemon names
+
   - Returns: `{ captured: string[] }`
 
 - `POST /api/pokemon/capture` - Toggle capture status
+
   - Body: `{ name: string, captured: boolean }`
   - Returns: `{ success: boolean }`
 
 - `GET /api/pokemon/types` - Get available Pokemon types
+
   - Returns: `{ types: string[] }`
 
 - `POST /api/pokemon/invalidate-cache` - Invalidate Redis cache
+
   - Returns: `{ success: boolean }`
 
 - `GET /icon/<name>` - Get Pokemon icon URL
@@ -97,6 +108,7 @@ The backend is a Flask REST API that provides:
 ## Tech Stack
 
 **Frontend:**
+
 - React 18 + TypeScript
 - Vite
 - React Query v5
@@ -104,9 +116,11 @@ The backend is a Flask REST API that provides:
 - Tailwind CSS
 
 **Backend:**
+
 - Flask (Python)
 - PostgreSQL 15
 - Redis 7
 
 **Infrastructure:**
+
 - Docker & Docker Compose
