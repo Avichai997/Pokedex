@@ -1,13 +1,13 @@
-FROM node:22-alpine
+FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY package*.json ./
-
-RUN npm install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 3001
+EXPOSE 8080
 
-CMD sh -c 'echo "Waiting for database to be ready..." && sleep 3 && (npm run migration:run || echo "Migration failed or already applied") && npm run start:dev'
+CMD ["python", "app.py"]
+

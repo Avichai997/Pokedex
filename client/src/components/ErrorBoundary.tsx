@@ -3,7 +3,7 @@ import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import { Component, ReactNode } from 'react';
 import { useNavigate, useRouteError } from 'react-router-dom';
 
-import { APP_ROUTES } from '@/constants/routes';
+import { APP_ROUTES } from '@/constants';
 
 interface IErrorBoundaryState {
   hasError: boolean;
@@ -34,7 +34,7 @@ export class ErrorBoundary extends Component<IErrorBoundaryProps, IErrorBoundary
   };
 
   handleGoHome = () => {
-    window.location.href = APP_ROUTES.DASHBOARD;
+    window.location.href = APP_ROUTES.POKEDEX;
   };
 
   render() {
@@ -67,7 +67,7 @@ export const ErrorFallbackUI = ({ error, onReset, onGoHome }: IErrorFallbackProp
     if (onGoHome) {
       onGoHome();
     } else {
-      window.location.href = APP_ROUTES.DASHBOARD;
+      window.location.href = APP_ROUTES.POKEDEX;
     }
     onReset?.();
   };
@@ -126,7 +126,7 @@ export const ErrorFallbackUI = ({ error, onReset, onGoHome }: IErrorFallbackProp
               className='bg-indigo-600 hover:bg-indigo-700'
               size='large'
             >
-              Go to Dashboard
+              Go to Pokédex
             </Button>
             <Button
               variant='outlined'
@@ -155,7 +155,7 @@ export const RouteErrorElement = () => {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
-    navigate(APP_ROUTES.DASHBOARD);
+    navigate(APP_ROUTES.POKEDEX);
   };
 
   return <ErrorFallbackUI error={error} onGoHome={handleGoHome} />;

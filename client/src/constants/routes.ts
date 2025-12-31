@@ -1,6 +1,4 @@
 export const APP_ROUTES = {
-  LOGIN: '/login',
-  REGISTER: '/register',
-  DASHBOARD: '/dashboard',
+  POKEDEX: '/pokedex',
   HOME: '/',
 } as const;

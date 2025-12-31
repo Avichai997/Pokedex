@@ -1,41 +1,23 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 
-import { ProtectedRoute, RouteErrorElement } from '@/components';
-import { APP_ROUTES } from '@/constants/routes';
-import { AuthPage, DashboardPage } from '@/pages';
+import { RouteErrorElement } from '@/components';
+import { APP_ROUTES } from '@/constants';
+import { PokedexPage } from '@/pages';
 
 export const router = createBrowserRouter([
   {
-    path: APP_ROUTES.LOGIN,
-    element: <AuthPage />,
-    errorElement: <RouteErrorElement />,
-  },
-  {
-    path: APP_ROUTES.REGISTER,
-    element: <AuthPage />,
-    errorElement: <RouteErrorElement />,
-  },
-  {
     path: APP_ROUTES.HOME,
-    element: (
-      <ProtectedRoute>
-        <Navigate to={APP_ROUTES.DASHBOARD} replace />
-      </ProtectedRoute>
-    ),
+    element: <Navigate to={APP_ROUTES.POKEDEX} replace />,
     errorElement: <RouteErrorElement />,
   },
   {
-    path: APP_ROUTES.DASHBOARD,
-    element: (
-      <ProtectedRoute>
-        <DashboardPage />
-      </ProtectedRoute>
-    ),
+    path: APP_ROUTES.POKEDEX,
+    element: <PokedexPage />,
     errorElement: <RouteErrorElement />,
   },
   {
     path: '*',
-    element: <Navigate to={APP_ROUTES.DASHBOARD} replace />,
+    element: <Navigate to={APP_ROUTES.POKEDEX} replace />,
     errorElement: <RouteErrorElement />,
   },
 ]);

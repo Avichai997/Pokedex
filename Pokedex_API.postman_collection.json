@@ -1,0 +1,977 @@
+{
+  "info": {
+    "_postman_id": "pokedex-api-collection",
+    "name": "Pokédex API",
+    "description": "Complete API collection for testing the Pokédex backend server",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Pokemon List",
+      "item": [
+        {
+          "name": "Get Pokemon - Page 1 (Default)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&sort=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Get first page of Pokemon with default pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pokemon - Page 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=2&page_size=10&sort=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Get second page of Pokemon"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pokemon - Page Size 5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=5&sort=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "5"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Get Pokemon with page size of 5"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pokemon - Page Size 20",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=20&sort=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "20"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Get Pokemon with page size of 20"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for fetching Pokemon list with pagination"
+    },
+    {
+      "name": "Sorting",
+      "item": [
+        {
+          "name": "Sort Ascending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&sort=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Sort Pokemon by number in ascending order"
+          },
+          "response": []
+        },
+        {
+          "name": "Sort Descending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&sort=desc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "desc"
+                }
+              ]
+            },
+            "description": "Sort Pokemon by number in descending order"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for testing sorting functionality"
+    },
+    {
+      "name": "Filtering",
+      "item": [
+        {
+          "name": "Filter by Type - Fire",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&type=Fire",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "Fire"
+                }
+              ]
+            },
+            "description": "Filter Pokemon by Fire type"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Type - Water",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&type=Water",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "Water"
+                }
+              ]
+            },
+            "description": "Filter Pokemon by Water type"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Type - Electric",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&type=Electric",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "Electric"
+                }
+              ]
+            },
+            "description": "Filter Pokemon by Electric type"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter by Type - Grass",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&type=Grass",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "Grass"
+                }
+              ]
+            },
+            "description": "Filter Pokemon by Grass type"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for testing type filtering"
+    },
+    {
+      "name": "Search",
+      "item": [
+        {
+          "name": "Search - Pikachu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&search=pikachu",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "pikachu"
+                }
+              ]
+            },
+            "description": "Search for Pokemon containing 'pikachu'"
+          },
+          "response": []
+        },
+        {
+          "name": "Search - Char",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&search=char",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "char"
+                }
+              ]
+            },
+            "description": "Search for Pokemon containing 'char' (should find Charmander, Charizard, etc.)"
+          },
+          "response": []
+        },
+        {
+          "name": "Search - Number 25",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&search=25",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "25"
+                }
+              ]
+            },
+            "description": "Search for Pokemon with number 25 (Pikachu)"
+          },
+          "response": []
+        },
+        {
+          "name": "Search - Fire Type",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&search=fire",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "fire"
+                }
+              ]
+            },
+            "description": "Search for Pokemon with 'fire' in any property"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for testing fuzzy search functionality"
+    },
+    {
+      "name": "Combined Filters",
+      "item": [
+        {
+          "name": "Type + Sort Descending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&type=Fire&sort=desc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "Fire"
+                },
+                {
+                  "key": "sort",
+                  "value": "desc"
+                }
+              ]
+            },
+            "description": "Filter by Fire type and sort descending"
+          },
+          "response": []
+        },
+        {
+          "name": "Search + Sort Ascending",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&search=char&sort=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "char"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Search for 'char' and sort ascending"
+          },
+          "response": []
+        },
+        {
+          "name": "Type + Search + Sort",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&type=Fire&search=char&sort=desc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "Fire"
+                },
+                {
+                  "key": "search",
+                  "value": "char"
+                },
+                {
+                  "key": "sort",
+                  "value": "desc"
+                }
+              ]
+            },
+            "description": "Combine type filter, search, and sort"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for testing combined filters"
+    },
+    {
+      "name": "Captured Pokemon",
+      "item": [
+        {
+          "name": "Get Captured Pokemon",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon/captured",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon", "captured"]
+            },
+            "description": "Get list of all captured Pokemon numbers"
+          },
+          "response": []
+        },
+        {
+          "name": "Capture Bulbasaur (#1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"number\": 1,\n  \"captured\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon/capture",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon", "capture"]
+            },
+            "description": "Mark Bulbasaur as captured"
+          },
+          "response": []
+        },
+        {
+          "name": "Capture Pikachu (#25)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"number\": 25,\n  \"captured\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon/capture",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon", "capture"]
+            },
+            "description": "Mark Pikachu as captured"
+          },
+          "response": []
+        },
+        {
+          "name": "Capture Charizard (#6)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"number\": 6,\n  \"captured\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon/capture",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon", "capture"]
+            },
+            "description": "Mark Charizard as captured"
+          },
+          "response": []
+        },
+        {
+          "name": "Release Bulbasaur (#1)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"number\": 1,\n  \"captured\": false\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon/capture",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon", "capture"]
+            },
+            "description": "Release Bulbasaur (remove from captured list)"
+          },
+          "response": []
+        },
+        {
+          "name": "Release Pikachu (#25)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"number\": 25,\n  \"captured\": false\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon/capture",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon", "capture"]
+            },
+            "description": "Release Pikachu (remove from captured list)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for managing captured Pokemon"
+    },
+    {
+      "name": "Icons",
+      "item": [
+        {
+          "name": "Get Icon - Bulbasaur",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/icon/bulbasaur",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["icon", "bulbasaur"]
+            },
+            "description": "Get icon URL for Bulbasaur"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Icon - Pikachu",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/icon/pikachu",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["icon", "pikachu"]
+            },
+            "description": "Get icon URL for Pikachu"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Icon - Charizard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/icon/charizard",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["icon", "charizard"]
+            },
+            "description": "Get icon URL for Charizard"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for getting Pokemon icon URLs"
+    },
+    {
+      "name": "Cache Management",
+      "item": [
+        {
+          "name": "Invalidate Cache",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon/invalidate-cache",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon", "invalidate-cache"]
+            },
+            "description": "Invalidate Redis cache for Pokemon data (forces fresh fetch from DB)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for cache management"
+    },
+    {
+      "name": "Edge Cases",
+      "item": [
+        {
+          "name": "Invalid Page Number (too high)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=9999&page_size=10&sort=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "9999"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Test with invalid page number (should clamp to last page)"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Page Number (zero)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=0&page_size=10&sort=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Test with page 0 (should clamp to page 1)"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Page Size",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=99&sort=asc",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "99"
+                },
+                {
+                  "key": "sort",
+                  "value": "asc"
+                }
+              ]
+            },
+            "description": "Test with invalid page size (should default to 10)"
+          },
+          "response": []
+        },
+        {
+          "name": "Empty Search Results",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&search=xyz123nonexistent",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "search",
+                  "value": "xyz123nonexistent"
+                }
+              ]
+            },
+            "description": "Test search with no results"
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Type Filter",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon?page=1&page_size=10&type=NonexistentType",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "type",
+                  "value": "NonexistentType"
+                }
+              ]
+            },
+            "description": "Test with non-existent type (should return empty results)"
+          },
+          "response": []
+        },
+        {
+          "name": "Capture Invalid Pokemon Number",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"number\": 99999,\n  \"captured\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/pokemon/capture",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8080",
+              "path": ["api", "pokemon", "capture"]
+            },
+            "description": "Test capturing non-existent Pokemon number"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for testing edge cases and error handling"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}

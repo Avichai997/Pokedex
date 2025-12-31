@@ -1,15 +1,13 @@
-FROM node:22-alpine
+FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY package*.json ./
-
-RUN npm install
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN npm run build
+EXPOSE 8080
 
-EXPOSE 3001
+CMD ["python", "app.py"]
 
-CMD sh -c 'if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then npm run build; fi && npm run migration:run || echo "Migration failed or already applied" && npm run start:prod'

@@ -1,338 +1,113 @@
-# Full-Stack App Template
+# Pokédex - Full-Stack Application
 
-A full-stack application template with user authentication. Built with React 18, NestJS, and PostgreSQL.
+A full-stack Pokédex application built with React 18, Flask (Python), PostgreSQL, and Redis.
 
-## Quick Start
-
-### Prerequisites
+## Prerequisites
 
 - Node.js 22+
 - Docker and Docker Compose
-- npm or yarn
+- Python 3.11+ (for local development)
 
-### Installation Steps
+## Quick Start
 
-1. **Install dependencies:**
+### Development Mode
 
-   ```bash
-   npm run install
-   ```
+```bash
+# Install dependencies
+npm run install
 
-2. **Configure environment variables (optional):**
+# Start all services (PostgreSQL, Redis, Flask server, React client)
+docker-compose -f docker-compose.dev.yml up --build
+```
 
-   You can set environment variables or edit the config files directly:
+**Access:**
+- Client: http://localhost:5173
+- API: http://localhost:8080/api
 
-   - Server config: `server/src/config/config.ts`
-   - Client config: `client/src/config/config.ts`
+### Production Mode
 
-   Or set environment variables before running:
+```bash
+# Install dependencies
+npm run install
 
-   ```bash
-   # Example: Set environment variables
-   export DB_PASSWORD=yourpassword
-   export JWT_SECRET=your-secret-key
-   ```
+# Build and start production containers
+docker-compose up --build
+```
 
-3. **Start database and server (Terminal 1):**
+**Access:**
+- Client: http://localhost:5173
+- API: http://localhost:8080/api
 
-   ```bash
-   npm run docker:up:dev
-   ```
+## Architecture
 
-4. **Run database migrations (wait for server to start, then in a new terminal):**
+### Client (React + TypeScript)
 
-   ```bash
-   cd server
-   npm run migration:run
-   ```
+The frontend is a React application built with:
+- **React 18** with TypeScript
+- **Vite** for fast development and building
+- **React Query** for data fetching and caching
+- **Zustand** for state management
+- **Tailwind CSS** for styling
 
-5. **Start client (Terminal 2):**
-   ```bash
-   npm run client:dev
-   ```
+**Key Features:**
+- Browse Pokemon with pagination
+- Filter by type
+- Search Pokemon by name, type, or number
+- Sort by Pokemon number
+- Mark Pokemon as captured
+- Light/dark theme toggle
+- Infinite scroll mode
 
-That's it! The application will be available at:
+### Server (Flask + Python)
 
-- **Client**: http://localhost:5173
-- **Server API**: http://localhost:3001/api
-- **API Documentation (Swagger)**: http://localhost:3001/api/docs
-- **Database**: localhost:5432
+The backend is a Flask REST API that provides:
+- **Flask** web framework
+- **PostgreSQL** for persistent storage (captured Pokemon)
+- **Redis** for caching Pokemon data (2-minute TTL)
 
-> 📖 For detailed setup instructions, troubleshooting, and production deployment, see [SETUP.md](./SETUP.md)
+**Key Features:**
+- RESTful API endpoints
+- Redis caching for performance
+- PostgreSQL for data persistence
+- CORS enabled for client communication
 
-## Features
+## API Endpoints
 
-- User authentication with JWT and HTTP-only cookies
-- Secure API with CSRF protection, CORS, and XSS prevention
-- Dockerized setup for easy deployment
-- TypeScript throughout for type safety
+### Pokemon Endpoints
+
+- `GET /api/pokemon` - Get paginated Pokemon list
+  - Query params: `page`, `page_size` (5/10/20), `sort` (asc/desc), `type`, `search`
+  - Returns: `{ pokemon: [], total: number, page: number, page_size: number, total_pages: number }`
+
+- `GET /api/pokemon/captured` - Get list of captured Pokemon names
+  - Returns: `{ captured: string[] }`
+
+- `POST /api/pokemon/capture` - Toggle capture status
+  - Body: `{ name: string, captured: boolean }`
+  - Returns: `{ success: boolean }`
+
+- `GET /api/pokemon/types` - Get available Pokemon types
+  - Returns: `{ types: string[] }`
+
+- `POST /api/pokemon/invalidate-cache` - Invalidate Redis cache
+  - Returns: `{ success: boolean }`
+
+- `GET /icon/<name>` - Get Pokemon icon URL
+  - Returns: Icon URL string
 
 ## Tech Stack
 
 **Frontend:**
-
-- React 18 with TypeScript
+- React 18 + TypeScript
 - Vite
 - React Query v5
 - Zustand
-- Material-UI
 - Tailwind CSS
 
 **Backend:**
-
-- NestJS 11 with TypeScript
-- TypeORM
-- PostgreSQL
-- JWT authentication
-- bcrypt for password hashing
-- Swagger/OpenAPI for API documentation
+- Flask (Python)
+- PostgreSQL 15
+- Redis 7
 
 **Infrastructure:**
-
 - Docker & Docker Compose
-- PostgreSQL 15
-
-## Prerequisites
-
-- Node.js 22 (use `.nvmrc` if you have nvm: `nvm use`)
-- Docker and Docker Compose
-- npm or yarn
-
-## Configuration
-
-Configuration is managed through config files with environment variable support:
-
-### Server Configuration
-
-Edit `server/src/config/config.ts` or set environment variables:
-
-```typescript
-// Default values in config.ts
-export const config = {
-  server: {
-    port: 3001,
-    nodeEnv: 'development',
-  },
-  database: {
-    host: 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: 'postgres',
-    name: 'app_db',
-  },
-  jwt: {
-    secret: 'dev-secret-key-change-in-production',
-    expiresIn: 604800, // 7 days
-  },
-  cors: {
-    clientUrl: 'http://localhost:5173',
-  },
-};
-```
-
-**Environment variables override defaults:**
-
-- `SERVER_PORT` - Server port (default: 3001)
-- `NODE_ENV` - Environment (development/production)
-- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` - Database config
-- `JWT_SECRET`, `JWT_EXPIRES_IN` - JWT configuration
-- `CLIENT_URL` - CORS allowed origin
-
-### Client Configuration
-
-Edit `client/src/config/config.ts` or set environment variables:
-
-```typescript
-// Default values in config.ts
-export const config = {
-  api: {
-    baseURL: 'http://localhost:3001/api',
-  },
-};
-```
-
-**Environment variables override defaults:**
-
-- `VITE_API_URL` - API base URL (default: http://localhost:3001/api)
-
-## Development Mode (Recommended for Fast HMR)
-
-For the best development experience with instant Hot Module Replacement (HMR), run the client **natively** while the server and database run in Docker:
-
-```bash
-# Install dependencies first
-npm run install
-
-# Start everything with one command (recommended!)
-npm run dev
-# This will:
-# 1. Start DB + Server in Docker with hot-reload
-# 2. Start Vite client natively with instant HMR
-```
-
-Or run components separately:
-
-```bash
-# Terminal 1: Start Docker services (DB + Server only)
-npm run docker:up:dev
-
-# Terminal 2: Start client natively (if not using npm run dev)
-cd client && npm run dev
-```
-
-**Why this approach?**
-
-- ⚡ **Super fast HMR**: Vite runs natively without Docker overhead
-- 🔄 **Live reload**: Changes reflect instantly (< 50ms)
-- 🐛 **Better debugging**: Native Chrome DevTools integration
-- 📦 **Isolated services**: Server & DB still in Docker for consistency
-
-### Manual Setup (All Services Local)
-
-If you prefer to run everything locally without Docker:
-
-#### 1. Database Setup
-
-Start PostgreSQL:
-
-```bash
-docker-compose up db
-```
-
-#### 2. Backend Setup
-
-```bash
-cd server
-npm install
-# Optionally edit server/src/config/config.ts or set environment variables
-npm run start:dev
-```
-
-The server will run on http://localhost:3001
-
-#### 3. Frontend Setup
-
-```bash
-cd client
-npm install
-# Optionally edit client/src/config/config.ts or set VITE_API_URL
-npm run dev
-```
-
-The client will run on http://localhost:5173
-
-## API Endpoints
-
-### Authentication
-
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - Login (sets HTTP-only cookie)
-- `POST /api/auth/logout` - Logout
-- `GET /api/auth/me` - Get current user
-- `GET /api/auth/csrf-token` - Get CSRF token
-
-## API Documentation (OpenAPI/Swagger)
-
-The server includes auto-generated OpenAPI/Swagger documentation for all API endpoints.
-
-### Access the Documentation
-
-Once the server is running, visit:
-
-- **Swagger UI**: http://localhost:3001/api/docs
-
-### Features
-
-- **Interactive API Testing**: Try out endpoints directly from the browser
-- **Request/Response Schemas**: View detailed schemas for all DTOs
-- **Authentication Support**:
-  - JWT Bearer token authentication
-  - Cookie-based authentication (access_token)
-- **Complete Endpoint Documentation**: All endpoints with descriptions, parameters, and examples
-
-### Using the Documentation
-
-1. **View Endpoints**: Browse all available API endpoints organized by tags
-2. **Test Endpoints**: Click "Try it out" on any endpoint to test it directly
-3. **Authenticate**: Use the "Authorize" button at the top to set your JWT token or cookie
-4. **View Schemas**: Check the "Schemas" section to see all data models and DTOs
-
-The documentation is automatically generated from your code using decorators and will stay up-to-date as you modify your controllers and DTOs.
-
-## Running Tests
-
-```bash
-# Backend tests
-cd server
-npm test
-
-# With coverage
-npm run test:cov
-```
-
-## Code Quality
-
-The project uses ESLint and Prettier with Husky git hooks:
-
-- **Pre-commit**: Runs lint-staged (ESLint + Prettier on staged files)
-- **Pre-push**: Runs full lint and build checks
-
-To format code manually:
-
-```bash
-# Server
-cd server
-npm run format
-npm run lint
-
-# Client
-cd client
-npm run lint
-```
-
-## Docker Commands
-
-### Start Services
-
-```bash
-# Development mode (with hot-reload)
-NODE_ENV=development DOCKERFILE=Dockerfile.dev docker-compose up --build
-
-# Production mode
-docker-compose up --build
-
-# Run in background (detached mode)
-docker-compose up -d --build
-```
-
-### Stop Services
-
-```bash
-docker-compose down
-```
-
-### View Logs
-
-```bash
-# All services
-docker-compose logs -f
-
-# Specific service
-docker-compose logs -f server
-docker-compose logs -f client
-docker-compose logs -f db
-```
-
-### Other Useful Commands
-
-```bash
-# Check running containers
-docker-compose ps
-
-# Rebuild specific service
-docker-compose build server
-docker-compose build client
-
-# Restart a service
-docker-compose restart server
-```

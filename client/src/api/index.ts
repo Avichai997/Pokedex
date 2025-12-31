@@ -1,2 +1,2 @@
-export * from './auth.api';
 export * from './axios';
+export * from './pokemon.api';
