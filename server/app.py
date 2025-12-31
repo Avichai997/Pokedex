@@ -1,134 +1,125 @@
+"""
+Flask application for Pokédex API.
+"""
+import os
+import logging
+from typing import Dict, Any
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+
 import db
-import redis
-import os
-import json
 import db_schema
+from database import (
+    init_connection_pool,
+    get_db_connection,
+    return_db_connection,
+    close_connection_pool,
+    check_db_health
+)
+from cache import (
+    init_redis_connection,
+    get_cached_pokemon,
+    get_cached_types,
+    invalidate_cache,
+    check_redis_health,
+    is_redis_enabled
+)
+from utils import filter_by_type, fuzzy_search, sort_pokemon
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
-# Redis connection setup
-redis_client = redis.Redis(
-    host=os.getenv('REDIS_HOST', 'localhost'),
-    port=int(os.getenv('REDIS_PORT', 6379)),
-    db=int(os.getenv('REDIS_DB', 0)),
-    decode_responses=True
-)
 
-# Cache TTL (default: 2 minutes)
-CACHE_TTL = int(os.getenv('POKEMON_CACHE_TTL', 120))
+class ValidationError(Exception):
+    """Raised when request validation fails."""
+    pass
 
 
-def get_db_connection():
-    """Get PostgreSQL database connection."""
-    import psycopg2
-    return psycopg2.connect(
-        host=os.getenv('DB_HOST', 'localhost'),
-        port=int(os.getenv('DB_PORT', 5432)),
-        user=os.getenv('DB_USER', 'postgres'),
-        password=os.getenv('DB_PASSWORD', 'postgres'),
-        database=os.getenv('DB_NAME', 'app_db')
+class NotFoundError(Exception):
+    """Raised when a resource is not found."""
+    pass
+
+
+@app.errorhandler(ValidationError)
+def handle_validation_error(e: ValidationError):
+    """Handle validation errors."""
+    logger.warning(f"Validation error: {e}")
+    return jsonify({'error': str(e)}), 400
+
+
+@app.errorhandler(NotFoundError)
+def handle_not_found_error(e: NotFoundError):
+    """Handle not found errors."""
+    logger.warning(f"Not found error: {e}")
+    return jsonify({'error': str(e)}), 404
+
+
+@app.errorhandler(Exception)
+def handle_generic_error(e: Exception):
+    """Handle generic errors."""
+    logger.error(f"Unhandled error: {e}", exc_info=True)
+    return jsonify({'error': 'An internal server error occurred'}), 500
+
+
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """
+    Health check endpoint for Redis, PostgreSQL, and DB file.
+    
+    Returns:
+        JSON with health status of all services
+    """
+    health_status: Dict[str, Any] = {
+        'status': 'healthy',
+        'services': {}
+    }
+    
+    # Check Redis
+    redis_healthy = check_redis_health()
+    health_status['services']['redis'] = {
+        'status': 'healthy' if redis_healthy else 'unhealthy',
+        'enabled': is_redis_enabled()
+    }
+    
+    # Check PostgreSQL
+    db_healthy = check_db_health()
+    health_status['services']['postgresql'] = {
+        'status': 'healthy' if db_healthy else 'unhealthy'
+    }
+    
+    # Check DB file access
+    try:
+        import db
+        # Just check if we can access the file (don't actually read it)
+        db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "pokemon_db.json"))
+        file_accessible = os.path.exists(db_path) and os.access(db_path, os.R_OK)
+        health_status['services']['db_file'] = {
+            'status': 'healthy' if file_accessible else 'unhealthy'
+        }
+    except Exception as e:
+        logger.error(f"DB file health check failed: {e}")
+        health_status['services']['db_file'] = {
+            'status': 'unhealthy',
+            'error': str(e)
+        }
+    
+    # Overall status
+    all_healthy = (
+        health_status['services']['postgresql']['status'] == 'healthy' and
+        health_status['services']['db_file']['status'] == 'healthy'
     )
-
-
-def get_cached_pokemon():
-    """Get Pokemon data from Redis cache or fetch from DB."""
-    cache_key = 'pokemon:all'
-    cached = redis_client.get(cache_key)
+    health_status['status'] = 'healthy' if all_healthy else 'degraded'
     
-    if cached:
-        return json.loads(cached)
-    
-    # Cache miss or expired - fetch from DB (2-second delay)
-    pokemon_data = db.get()
-    
-    # Store in Redis with TTL
-    redis_client.setex(cache_key, CACHE_TTL, json.dumps(pokemon_data))
-    
-    return pokemon_data
-
-
-def get_cached_types():
-    """Get Pokemon types from Redis cache or extract from cached Pokemon data."""
-    cache_key = 'pokemon:types'
-    cached = redis_client.get(cache_key)
-    
-    if cached:
-        return json.loads(cached)
-    
-    # Cache miss - extract types from cached Pokemon data
-    all_pokemon = get_cached_pokemon()
-    types_set = set()
-    
-    for pokemon in all_pokemon:
-        if pokemon.get('type_one'):
-            types_set.add(pokemon.get('type_one'))
-        if pokemon.get('type_two'):
-            types_set.add(pokemon.get('type_two'))
-    
-    types_list = sorted(list(types_set))
-    
-    # Store in Redis with same TTL as Pokemon cache
-    redis_client.setex(cache_key, CACHE_TTL, json.dumps(types_list))
-    
-    return types_list
-
-
-def filter_by_type(pokemon_list, type_filter):
-    """Filter Pokemon by type (matches type_one OR type_two)."""
-    if not type_filter:
-        return pokemon_list
-    
-    type_filter_lower = type_filter.lower()
-    return [
-        p for p in pokemon_list
-        if (p.get('type_one', '').lower() == type_filter_lower or
-            p.get('type_two', '').lower() == type_filter_lower)
-    ]
-
-
-def fuzzy_search(pokemon_list, search_query):
-    """Fuzzy search across Pokemon properties."""
-    if not search_query:
-        return pokemon_list
-    
-    search_lower = search_query.lower()
-    results = []
-    
-    for pokemon in pokemon_list:
-        # Search in name
-        if search_lower in pokemon.get('name', '').lower():
-            results.append(pokemon)
-            continue
-        
-        # Search in types
-        if (search_lower in pokemon.get('type_one', '').lower() or
-            search_lower in pokemon.get('type_two', '').lower()):
-            results.append(pokemon)
-            continue
-        
-        # Search in number (as string)
-        if search_lower in str(pokemon.get('number', '')):
-            results.append(pokemon)
-            continue
-        
-        # Search in other fields (optional)
-        if search_lower in str(pokemon.get('generation', '')).lower():
-            results.append(pokemon)
-            continue
-    
-    return results
-
-
-def sort_pokemon(pokemon_list, sort_direction='asc'):
-    """Sort Pokemon by number attribute."""
-    sorted_list = sorted(pokemon_list, key=lambda x: x.get('number', 0))
-    if sort_direction.lower() == 'desc':
-        sorted_list.reverse()
-    return sorted_list
+    status_code = 200 if all_healthy else 503
+    return jsonify(health_status), status_code
 
 
 @app.route('/icon/<name>')
@@ -142,11 +133,19 @@ def get_pokemon():
     """Get paginated, sorted, and filtered Pokemon list."""
     try:
         # Get query parameters
-        page = int(request.args.get('page', 1))
-        page_size = int(request.args.get('page_size', 10))
+        try:
+            page = int(request.args.get('page', 1))
+            page_size = int(request.args.get('page_size', 10))
+        except ValueError:
+            raise ValidationError("Invalid page or page_size parameter")
+        
         sort = request.args.get('sort', 'asc')
         type_filter = request.args.get('type', None)
         search_query = request.args.get('search', None)
+        
+        # Validate sort direction
+        if sort not in ['asc', 'desc']:
+            sort = 'asc'
         
         # Validate page_size
         valid_page_sizes = [5, 10, 20]
@@ -170,7 +169,7 @@ def get_pokemon():
         
         # Calculate pagination
         total = len(sorted_pokemon)
-        total_pages = (total + page_size - 1) // page_size
+        total_pages = (total + page_size - 1) // page_size if total > 0 else 0
         
         # Clamp page to valid range
         if page < 1:
@@ -191,13 +190,17 @@ def get_pokemon():
             'total_pages': total_pages
         })
     
+    except ValidationError:
+        raise
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error in get_pokemon: {e}", exc_info=True)
+        raise
 
 
 @app.route('/api/pokemon/captured', methods=['GET'])
 def get_captured_pokemon():
     """Get list of captured Pokemon names."""
+    conn = None
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -208,24 +211,34 @@ def get_captured_pokemon():
         captured_names = [row[0] for row in results]
         
         cursor.close()
-        conn.close()
+        return_db_connection(conn)
         
         return jsonify({'captured': captured_names})
     
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error in get_captured_pokemon: {e}", exc_info=True)
+        if conn:
+            try:
+                return_db_connection(conn)
+            except:
+                pass
+        raise
 
 
 @app.route('/api/pokemon/capture', methods=['POST'])
 def toggle_capture():
     """Toggle capture status for a Pokemon."""
+    conn = None
     try:
         data = request.get_json()
+        if not data:
+            raise ValidationError("Request body is required")
+        
         pokemon_name = data.get('name')
         captured = data.get('captured', False)
         
         if pokemon_name is None:
-            return jsonify({'error': 'Pokemon name is required'}), 400
+            raise ValidationError("Pokemon name is required")
         
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -243,12 +256,21 @@ def toggle_capture():
         
         conn.commit()
         cursor.close()
-        conn.close()
+        return_db_connection(conn)
         
         return jsonify({'success': True})
     
+    except ValidationError:
+        raise
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error in toggle_capture: {e}", exc_info=True)
+        if conn:
+            try:
+                conn.rollback()
+                return_db_connection(conn)
+            except:
+                pass
+        raise
 
 
 @app.route('/api/pokemon/types', methods=['GET'])
@@ -258,31 +280,67 @@ def get_pokemon_types():
         types = get_cached_types()
         return jsonify({'types': types})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error in get_pokemon_types: {e}", exc_info=True)
+        raise
 
 
 @app.route('/api/pokemon/invalidate-cache', methods=['POST'])
-def invalidate_cache():
+def invalidate_cache_endpoint():
     """Invalidate Redis cache for Pokemon data and types."""
     try:
-        redis_client.delete('pokemon:all')
-        redis_client.delete('pokemon:types')
-        return jsonify({'success': True})
+        success = invalidate_cache()
+        if success:
+            return jsonify({'success': True, 'message': 'Cache invalidated successfully'})
+        else:
+            return jsonify({
+                'success': False,
+                'message': 'Cache invalidation failed or Redis is unavailable'
+            }), 503
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"Error in invalidate_cache: {e}", exc_info=True)
+        raise
 
 
 @app.route('/')
 def hello():
     """Legacy endpoint - returns all Pokemon."""
-    data = db.get()
-    return jsonify(data)
+    try:
+        data = db.get()
+        return jsonify(data)
+    except Exception as e:
+        logger.error(f"Error in legacy endpoint: {e}", exc_info=True)
+        raise
+
+
+@app.teardown_appcontext
+def close_db_connections(error):
+    """Clean up database connections on request teardown."""
+    # Connections are returned to pool automatically, but this is a safety net
+    pass
 
 
 if __name__ == '__main__':
-    # Initialize database schema on startup
-    print("Initializing database schema...")
+    # Initialize logging
+    logger.info("Starting Pokédex API server...")
+    
+    # Initialize database schema
+    logger.info("Initializing database schema...")
     db_schema.init_database()
     
+    # Initialize connection pool
+    logger.info("Initializing PostgreSQL connection pool...")
+    if not init_connection_pool(min_conn=1, max_conn=10):
+        logger.error("Failed to initialize PostgreSQL connection pool")
+        exit(1)
+    
+    # Initialize Redis connection
+    logger.info("Initializing Redis connection...")
+    init_redis_connection(max_retries=3, retry_delay=1.0)
+    
+    # Register cleanup on shutdown
+    import atexit
+    atexit.register(close_connection_pool)
+    
     port = int(os.getenv('PORT', 8080))
+    logger.info(f"Server starting on port {port}")
     app.run(host='0.0.0.0', port=port, debug=True)

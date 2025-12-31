@@ -2,9 +2,12 @@
 Database schema initialization for captured_pokemon table.
 Run this on server startup to ensure the table exists.
 """
-import psycopg2
 import os
+import logging
+import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
+logger = logging.getLogger(__name__)
 
 
 def get_db_connection():
@@ -39,10 +42,10 @@ def init_database():
         
         cursor.close()
         conn.close()
-        print("Database schema initialized successfully")
+        logger.info("Database schema initialized successfully")
         return True
     except Exception as e:
-        print(f"Error initializing database schema: {e}")
+        logger.error(f"Error initializing database schema: {e}")
         return False
 
 

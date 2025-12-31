@@ -65,6 +65,7 @@ services:
     environment:
       NODE_ENV: production
       VITE_API_URL: ${VITE_API_URL:-http://localhost:3001/api}
+      DOCKER_ENV: 'true'
     depends_on:
       - server
 
