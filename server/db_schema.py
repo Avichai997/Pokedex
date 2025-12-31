@@ -25,7 +25,6 @@ def init_database():
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
         
-        # Create captured_pokemon table
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS captured_pokemon (
                 pokemon_name VARCHAR(255) PRIMARY KEY,
@@ -33,7 +32,6 @@ def init_database():
             );
         """)
         
-        # Create index for faster lookups
         cursor.execute("""
             CREATE INDEX IF NOT EXISTS idx_captured_pokemon_name 
             ON captured_pokemon(pokemon_name);

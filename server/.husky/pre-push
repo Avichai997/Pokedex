@@ -1,14 +1,19 @@
 #!/usr/bin/env sh
 cd "$(dirname -- "$0")/../.." || exit 1
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
 cd server || exit 1
 
-npx concurrently --raw --kill-others-on-fail \
-  "npm run lint" \
-  "npm run format" \
-  "npm run test" \
-  "npm run build"
+# Run ruff linting
+echo "Running ruff lint..."
+ruff check . || exit 1
+
+# Check formatting
+echo "Checking code formatting..."
+ruff format --check . || exit 1
+
+# Check Python syntax
+echo "Checking Python syntax..."
+python -m py_compile app.py db.py db_schema.py || exit 1
+
+echo "All checks passed!"
 
