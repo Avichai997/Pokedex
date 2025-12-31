@@ -33,6 +33,7 @@ export const PokemonPagination = ({ totalPages, total }: IPokemonPaginationProps
         mt: 3,
         flexWrap: 'wrap',
         gap: 2,
+        marginBottom: 2,
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

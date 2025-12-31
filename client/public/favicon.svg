@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Outer circle background -->
+  <circle cx="50" cy="50" r="45" fill="#1F2937"/>
+  
+  <!-- Top half (red) -->
+  <path d="M 50 5 A 45 45 0 0 1 95 50 L 50 50 Z" fill="#DC2626"/>
+  <path d="M 50 5 A 45 45 0 0 1 5 50 L 50 50 Z" fill="#EF4444"/>
+  
+  <!-- Bottom half (white) -->
+  <path d="M 50 50 A 45 45 0 0 1 95 95 L 50 95 Z" fill="#F3F4F6"/>
+  <path d="M 50 50 A 45 45 0 0 1 5 95 L 50 95 Z" fill="#FFFFFF"/>
+  
+  <!-- Center band (black) -->
+  <rect x="5" y="47" width="90" height="6" fill="#1F2937"/>
+  
+  <!-- Center button (white outer) -->
+  <circle cx="50" cy="50" r="12" fill="#FFFFFF" stroke="#1F2937" stroke-width="2"/>
+  
+  <!-- Center button (inner black) -->
+  <circle cx="50" cy="50" r="7" fill="#1F2937"/>
+  
+  <!-- Center button highlight -->
+  <circle cx="50" cy="50" r="5" fill="#374151"/>
+  
+  <!-- Top highlight -->
+  <ellipse cx="50" cy="25" rx="25" ry="15" fill="#F87171" opacity="0.3"/>
+</svg>

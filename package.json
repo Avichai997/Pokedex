@@ -1,17 +1,23 @@
 {
-  "name": "full-stack-app-template",
+  "name": "pokedex",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "install": "cd client && npm install && cd ../server && npm install",
+    "install": "cd client && npm install && cd ../server && pip install -r requirements.txt",
+    "install:client": "cd client && npm install",
+    "install:server": "cd server && pip install -r requirements.txt",
     "prepare": "husky install",
+    "dev": "concurrently \"npm run client:dev\" \"npm run server:dev\"",
+    "client:dev": "cd client && npm run dev",
+    "client:build": "cd client && npm run build",
+    "server:dev": "cd server && python app.py",
+    "server:install": "cd server && pip install -r requirements.txt",
     "docker:up": "docker-compose up",
     "docker:up:dev": "docker-compose -f docker-compose.dev.yml up",
     "docker:build": "docker-compose up --build",
     "docker:build:dev": "docker-compose -f docker-compose.dev.yml up --build",
     "docker:down": "docker-compose down",
     "docker:down:dev": "docker-compose -f docker-compose.dev.yml down",
-    "client:dev": "cd client && npm run dev",
     "docker:clean": "docker-compose down -v --rmi all && docker system prune -a --volumes -f"
   },
   "devDependencies": {

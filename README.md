@@ -13,11 +13,13 @@ A full-stack Pokédex application built with React 18, Flask (Python), PostgreSQ
 ### Development Mode
 
 ```bash
-# Install dependencies
-npm run install
-
-# Start all services (PostgreSQL, Redis, Flask server, React client)
+# Start all services (PostgreSQL, Redis, Flask server)
 docker-compose -f docker-compose.dev.yml up --build
+
+# Start Client app
+cd client
+npm install
+npm run dev
 ```
 
 **Access:**
@@ -27,9 +29,6 @@ docker-compose -f docker-compose.dev.yml up --build
 ### Production Mode
 
 ```bash
-# Install dependencies
-npm run install
-
 # Build and start production containers
 docker-compose up --build
 ```

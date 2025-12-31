@@ -5,8 +5,7 @@ import { IPokemon, IPokemonFilters } from '@/types';
 import { usePokedexSearchParams, usePokemonQuery } from '@/hooks';
 
 export const PokemonGridView = () => {
-  const { page, pageSize, sort, typeFilter, searchQuery } =
-    usePokedexSearchParams();
+  const { page, pageSize, sort, typeFilter, searchQuery } = usePokedexSearchParams();
 
   const filters: IPokemonFilters = {
     type: typeFilter,
@@ -21,6 +20,8 @@ export const PokemonGridView = () => {
 
   return (
     <>
+      <PokemonPagination totalPages={data.total_pages} total={data.total} />
+
       <Box
         sx={{
           display: 'grid',
